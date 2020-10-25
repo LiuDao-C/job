@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+<style>
+    html,
+    body {
+        height: 100%;
+        overflow: hidden;
+    }
+
+     .container {
+        height: 100%;
+        padding: 0 200px;
+        /* padding是否可以用margin代替 */
+    }
+    
+    .left,
+    .right {
+        width: 200px;
+        min-height: 200px;
+    }
+
+    .center {
+        width: 100%;
+        min-height: 400px;
+        background-color: red;
+    }
+
+    .left,
+    .center,
+    .right {
+        float: left;
+    } 
+
+    .left {
+        margin-left: -100%; 
+        position: relative;
+        left: -200px;   
+        background-color:blue;
+    }
+
+    .right {
+        margin-right: -200px; 
+        background-color: yellow;
+    } */
+</style>
+
+<div class="container clearfix">
+    
+    <div class="center"></div>
+    <div class="left"></div>
+    <div class="right"></div>
+</div>
+</body>
+</html>

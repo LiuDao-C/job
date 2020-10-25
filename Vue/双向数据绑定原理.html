@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    姓名：<span id="spanName"></span>
+    <br>
+    <input type="text" id="inputName">
+
+    <!-- Vue 2.0 -->
+    <script>
+        // let obj={
+        //     name: ''
+        // };
+
+        // // 深克隆
+        // let newObj = JSON.parse(JSON.stringify(obj));
+        // Object.defineProperty(obj, 'name', {
+        //     get() {
+        //         //不能直接这么写，因为this.name也会触发get方法，相当于进入了死循环
+        //         //return this.name;
+        //         return newObj.name;
+        //     },
+        //     set(val) {
+        //         if(val === newObj.name) return;
+        //         newObj.name = val;
+        //         observe();
+        //     }
+        // });
+
+        // function observe(){
+        //     spanName.innerHTML = obj.name;
+        //     inputName.value = obj.name;
+        // }
+        // observe();
+        // setTimeout(()=>{
+        //     obj.name = '六道';
+        // }, 1000)
+
+        // inputName.oninput = function() {
+        //     obj.name = this.value;
+        // }
+    </script>
+
+
+
+    <!-- Vue 3.0 -->
+    <script>
+        let obj = {};
+        obj = new Proxy(obj, {
+            get(target, prop) {
+                console.log('A');
+                return target[prop];
+            },
+            set(target, prop, value) {
+                console.log('B');
+                target[prop] = value;
+                observe();
+            }
+        });
+
+        function observe(){
+            spanName.innerHTML = obj.name;
+            inputName.value = obj.name;
+        }
+        
+        setTimeout(()=>{
+            obj.name = '六道';
+        }, 1000)
+
+        inputName.oninput = function() {
+            obj.name = this.value;
+        }
+    </script>
+</body>
+</html>
