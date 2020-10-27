@@ -1,3 +1,16 @@
+### 1、★常用的块级元素和行内元素有哪些，它们的区别？
+
+````js
+常见的块级元素有 div ul ol li dl dt dd h1 p
+常见的行内元素有 a b span img strong button input label select textarea
+//区别
+格式上，默认情况下，行内元素不会以新行开始，而块级元素会新起一行
+内容上，默认情况下，行内元素只能包含文本和其他行内元素。而块级元素可以包含行内元素和其他元素。
+行内元素与块级元素的属性不同，主要是盒模型属性上：行内元素设置width和height无效（可以设置inline—height），设置margin和padding的上下不会对其他元素产生影响。
+````
+
+
+
 ### 4、link和@import的区别
 
 页面导入样式时，使用link和@import的区别
@@ -131,7 +144,7 @@ sessionStorage的数据在浏览器关闭后自动删除
 
 
 
-### 13、cookie、sessionStorage和localStorage的区别
+### 13、★cookie、sessionStorage和localStorage的区别
 
 ````js
 SessionStorage、LocalStorage、cookie这三者都可以被用来浏览器端存储数据，而且都是字符串类型的键值对。区别在于前两者属于HTML5 WebStorage，创建它们的目的是为了便于客户端存储数据。而cookie是网站为了标示用户身份而储存在用户本地终端上的数据（通常经过加密）。cookie数据在同源（协议、主机、端口）的http请求中携带（即使不需要用到），会在浏览器和服务器之间来回传递
@@ -217,7 +230,7 @@ SVG是一种使用XML描述2D图形的语言。SVG基于XML,这意味着SVG DOM�
 
 
 
-### 19、前端性能优化
+### 19、★前端性能优化
 
 ````js
 前端性能优化主要是为了提高页面的加载速度，优化用户的访问体验。我认为可以从这些方面来进行优化
