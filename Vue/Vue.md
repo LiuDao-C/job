@@ -116,7 +116,7 @@ loader 可以理解为 webpack 的编译器，它使得 webpack 可以处理一�
 
 
 
-### 8、★Vue的生命周期
+### 8、★★Vue的生命周期
 
 ````js
 Vue 的生命周期指的是组件从创建到销毁的一系列的过程。通过提供的 Vue 在生命周期各个阶段的钩子函数，我们可以很好的在 Vue 的各个生命阶段实现一些操作。
@@ -273,14 +273,91 @@ axios客户端支持防止CSRF，在每个请求都带一个从cookie中拿到�
 ### 20、★你是如何使用vue-router的，你都用到了哪些属性？
 
 ````js
-在项目中主要是用vue-router来实现前端路由,使用 <router-link> 创建 a 标签来定义导航链接
-使用 <router-view>
-使用 $router.push
-嵌套路由，命名路由
-path:
-name:
-component:
-redirect:
-children:
+在项目中主要是用vue-router来实现前端路由
+<router-link> 用于导航，通过传入“to”属性来指定链接，默认会被渲染成一个<a>标签
+<router-view> 路由出口，路由匹配到的组件将会渲染在这里
+$router.push
+path: 路径
+name: 路由名称，对应router-view的名称
+component: 组件名
+redirect:  不渲染组件，直接重定向
+children:  嵌套路由
+//动态路径参数，以冒号开头，当匹配到一个路由时，参数值会被设置到this.$route.params
+如/product/1，则$route.prams = {id: 1}
+动态路由：  path:'/product/:id'  //动态路径参数  以冒号开头
+//当使用路由参数时，例如从/product/1 导航到/product/2，原来的组件实例会被复用。因为两个路由都渲染同个组件，比起销毁再创建，复用则显得更加高效。不过，这也意味着组件的生命周期钩子不会再被调用。
+路由懒加载：延迟加载或按需加载，即在需要的时候的时候进行加载
+在单页应用中，如果没有应用懒加载，运用webpack打包后的文件将会异常的大，这就会造成进入首页时，需要加载的内容过多，延时过长，不利于用户体验，运用懒加载可以将页面进行划分，按需加载页面，可以分担首页所承担的加载压力，减少加载用时。
+结合 Vue 的异步组件和 Webpack 的代码分割功能
 ````
 
+
+
+### 21、★Vue和React的区别，包括原理和写法？
+
+````js
+//数据是不是可变的
+react整体是函数式的思想，把组件设计成纯组件，状态和逻辑通过参数传入，所以在react中，是单向数据流，推崇结合immutable来实现数据不可变。
+而vue的思想是响应式的，也就是基于是数据可变的，通过对每一个属性建立Watcher来监听，当属性变化的时候，响应式的更新对应的虚拟dom。
+//通过js来操作一切，还是用各自的处理方式
+react的思路是all in js，通过js来生成html，所以设计了jsx，还有通过js来操作css，社区的styled-component、jss等
+vue是把html，css，js组合到一起，用各自的处理方式，vue有单文件组件，可以把html、css、js写到一个文件中，html提供了模板引擎来处理。
+//类式的组件写法，还是声明式的写法
+react是类式的写法，api很少
+而vue是声明式的写法，通过传入各种options，api和参数都很多。所以react结合typescript更容易一起写，vue稍微复杂
+//什么功能内置，什么交给社区去做
+react做的事情很少，很多都交给社区去做，vue很多东西都是内置的，写起来确实方便一些
+//模板渲染方式不同
+React是在组件JS代码中，通过原生JS实现模板中的常见语法，比如插值，条件，循环等，都是通过JS语法实现的
+Vue是在和组件JS代码分离的单独的模板中，通过指令来实现的，比如条件语句就需要 v-if 来实现
+````
+
+
+
+### 22、★你是如何使用vuex的，vuex中的store中的数据是如何获取和赋值的？
+
+````js
+我使用vuex主要是为了管理用户信息、权限控制等全局状态量
+将数据存入vuex中（在要存入数据的页面写）
+this.$store.commit("print/setPrint", {  //print 表示vuex的文件名
+       ID: this.ID,
+       BrandID: 402
+});
+将数据从vuex中取出来使用（在要使用的页面写）
+import { mapState, mapActions } from "vuex";
+    computed: {
+        ...mapState({
+             print:state=>state.print.all
+        })
+}
+在用到的地方直接写入以下代码即可：
+this.CreateID = this.print.ID;
+this.GoodsID = this.print.BrandID;
+````
+
+
+
+### 23、★Vue如何实现多页面应用？
+
+````js
+//用nust.js
+
+//修改webpack配置
+在webpack的entry中添加多个入口
+````
+
+
+
+### 24、./和../和@的区别
+
+````js
+/表示相对路径，具体代表当前目录下的同级目录，遵从的是从后往前找文件
+
+@/的意思：
+表示的是相对路径(当然这也是简写啦)，因为这个在根目录/build/webpack.base.conf.js文件中@是配置的，
+比如我的配置文件中@就代表src目录，遵从的是从前往后找，比如’@/components/login’ 就表示的是src/components/login文件
+````
+
+
+
+### 
