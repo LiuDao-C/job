@@ -217,7 +217,7 @@ mixins 应该是我们最常使用的扩展组件的方式了。如果多个组�
 
 
 
-### 16、谈谈对vuex的理解
+### 16、★谈谈对vuex的理解
 
 ````js
 //vuex是什么
@@ -233,6 +233,17 @@ module：将store分割成模块，每个模块都具有state、mutation、actio
 当组件进行数据修改的时候我们需要调用dispatch来触发actions里面的方法。actions里面的每个方法都会有一个commit方法，当方法执行的时候会通过commit来触发mutations里面的方法进行数据的修改。mutations里面的每个函数都会有一个state参数，这样就可以在mutations里面进行state的数据修改，当数据修改完毕后会传导给页面。页面的数据也会发生改变.
 //为什么要用vuex
 由于传参的方法对于多层嵌套的组件将会非常繁琐，并且对于兄弟组件间的状态传递无能为力。我们经常会采用父子组件直接引用或者通过事件来变更和同步状态的多份拷贝。以上的这些模式非常脆弱，通常会导致代码无法维护。所以我们需要把组件的共享状态抽取出来，以一个全局单例模式管理。在这种模式下，我们的组件树构成了一个巨大的“视图”，不管在树的哪个位置，任何组件都能获取状态或者触发行为！另外，通过定义和隔离状态管理中的各种概念并强制遵守一定的规则，我们的代码将会变得更结构化且易维护。
+
+Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。每一个 Vuex 应用的核心就是 store（仓库）。“store” 基本上就是一个容器，它包含着你的应用中大部分的状态 ( state )。
+    （1）Vuex 的状态存储是响应式的。当 Vue 组件从 store 中读取状态的时候，若 store 中的状态发生变化，那么相应的组件也会相应地得到高效更新。
+    （2）改变 store 中的状态的唯一途径就是显式地提交 (commit) mutation。这样使得我们可以方便地跟踪每一个状态的变化。
+    主要包括以下几个模块:
+  
+      State：定义了应用状态的数据结构，可以在这里设置默认的初始状态
+      Getter：允许组件从 Store 中获取数据，mapGetters 辅助函数仅仅是将 store 中的 getter 映射到局部计算属性
+      Mutation：是唯一更改 store 中状态的方法，且必须是同步函数
+      Action：用于提交 mutation，而不是直接变更状态，可以包含任意异步操作
+      Module：允许将单一的 Store 拆分为多个 store 且同时保存在单一的状态树中。
 ````
 
 
@@ -360,4 +371,43 @@ this.GoodsID = this.print.BrandID;
 
 
 
-### 
+### 25、★有对axios进行过封装吗，axios有什么拦截器？
+
+````js
+给请求配置超时时间、请求头，统一设置语言、统一设置内容类型、制定数据格式等，做完后记得返回这个配置，否则整个请求不会进行。
+还有就是对响应进行拦截，就是对各种响应错误码进行统一错误处理，还有断网处理
+if (!window.navigator.online) { // 断网处理
+   // todo: jump to offline page
+   return -1;
+
+//请求拦截
+axios.interceptors.request.use
+
+//响应拦截
+axios.interceptors.response.use(function(response) {
+  let res = response.data;
+  if(res.status == 0) {
+    return res.data;
+  } else if(res.status == 10) {
+      window.location.href = '/#/login';
+      return Promise.reject(res);
+  } else {
+    //alert(res.msg);
+    Message.warning(res.msg);
+    return Promise.reject(res);
+  }
+},(error)=>{
+  return Promise.reject(error);
+});
+````
+
+
+
+### 26、★v-if和v-show有什么区别？
+
+````js
+v-if 是真正的条件渲染，因为它会确保在切换过程中条件块内的事件监听器和子组件适当地被销毁和重建；也是短路的：如果在初始渲染时条件为假，则什么也不做——直到条件第一次变为真时，才会开始渲染条件块。
+v-show 就简单得多——不管初始条件是什么，元素总是会被渲染，并且只是简单地基于 CSS 的 “display” 属性进行切换。
+所以，v-if 适用于在运行时很少改变条件，不需要频繁切换条件的场景；v-show 则适用于需要非常频繁切换条件的场景。
+````
+

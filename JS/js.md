@@ -1020,7 +1020,7 @@ function mySetInterval(fn, timeout) {
 ````js
 Promise 对象是异步编程的一种解决方案，最早由社区提出。Promises/A+ 规范是 JavaScript Promise 的标准，规定了一个 Promise 所必须具有的特性。
 
-Promise 是一个构造函数，接收一个函数作为参数，返回一个 Promise 实例。一个 Promise 实例有三种状态，分别是 pending、resolved 和 rejected，分别代表了进行中、已成功和已失败。实例的状态只能由 pending 转变 resolved 或者 rejected 状态，并且状态一经改变，就凝固了，无法再被改变了。状态的改变是通过 resolve() 和 reject() 函数来实现的，我们可以在异步操作结束后调用这两个函数改变 Promise 实例的状态，它的原型上定义了一个 then 方法，使用这个 then 方法可以为两个状态的改变注册回调函数。这个回调函数属于微任务，会在本轮事件循环的末尾执行。
+Promise 是一个构造函数，接收一个函数作为参数，返回一个 Promise 实例。一个 Promise 实例有三种状态，分别是 pending、fulfilled 和 rejected，分别代表了初始状态、已成功和已失败。实例的状态只能由 pending 转变 fulfilled 或者 rejected 状态，并且状态一经改变，就凝固了，无法再被改变了。状态的改变是通过 resolve() 和 reject() 函数来实现的，我们可以在异步操作结束后调用这两个函数改变 Promise 实例的状态，它的原型上定义了一个 then 方法，使用这个 then 方法可以为两个状态的改变注册回调函数。这个回调函数属于微任务，会在本轮事件循环的末尾执行。
 
 const PENDING = "pending";
 const RESOLVED = "resolved";
@@ -1380,5 +1380,43 @@ get请求会保存在浏览器历史记录中，还可能保存在web服务器�
 
 ````js
 $.ajax并进行了简单的封装
+````
+
+
+
+### 63、★ES6有哪些新特性？
+
+````js
+//箭头函数，它和普通函数有什么区别？
+ES6 允许使用“箭头”（=>）定义函数。它主要有两个作用：缩减代码和改变this指向
+箭头函数的 this 永远指向其上下文的 this ，也就是定义时所在的对象，任何方法都改变不了其指向，如 call() , bind() , apply()
+普通函数的this指向调用它的那个对象
+箭头函数有几个使用注意点。
+函数体内的this对象，就是定义时所在的对象，而不是使用时所在的对象。因为它没有this，所以此时的this就是外层的this，因此this就是指向定义时所在的对象
+不可以当作构造函数，也就是说，不可以使用new命令，否则会抛出一个错误。
+不可以使用arguments对象，该对象在函数体内不存在。如果要用，可以用 rest 参数代替。
+不可以使用yield命令，因此箭头函数不能用作 Generator 函数。
+箭头函数没有原型属性
+
+//Promise
+Promise.prototype.then方法：链式操作
+Promise.prototype.catch方法：捕捉错误
+Promise.prototype.finally方法：在promise结束时，无论结果是fulfilled或者是rejected，都会执行指定的回调函数，避免同样的语句需要在then和catch中各写一次的情况
+
+//扩展运算符
+扩展运算符则允许将一个数组分割，并将各个项作为分离的参数传给函数
+
+//let、const
+````
+
+
+
+### 64、★apply、call和bind函数的区别
+
+````js
+都是用来改变函数的this对象的指向的；
+第一个参数都是this要指向的对象；
+都可以利用后续参数传参；
+bind是返回对应函数，便于稍后调用，apply、call是立即调用；
 ````
 
