@@ -6,8 +6,19 @@
     <title>Document</title>
 </head>
 <body>
-    <link rel="stylesheet" href="./test.css">
-    <style type="text/css">@import url("test.css");</style>
-    <div></div>
+    <div id="app"></div>
+    <script>
+        let state = {count: 0};
+
+        const watcher = (fn) => {
+            fn();
+        }
+        watcher(()=>{
+            app.innerHTML = state.count;
+        })
+        watcher(()=>{
+            console.log(state.count);
+        })
+    </script>
 </body>
 </html>
