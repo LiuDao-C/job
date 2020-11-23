@@ -58,6 +58,8 @@ vue 通过使用双向数据绑定，来实现了 View 和 Model 的同步更新
 ### 5、diff算法及其原理
 
 ````js
+渲染组件时，会通过Vue.extend方法构建子组件的构造函数，并进行实例化。最终手动调用$mount()进行挂载。更新组件时会进行patchVnode()流程，核心就是diff算法。
+
 两个树的完全 diff 算法的时间复杂度为 O(n^3) ，但是在前端中，我们很少会跨层级的移动元素，所以我们只需要比较同一层级的元素进行比较，这样就可以将算法的时间复杂度降低为 O(n)。
 
 1、先同级比较，再比较子节点
@@ -148,22 +150,23 @@ Vue 一共有8个生命阶段，分别是创建前、创建后、加载前、加
 
 
 
-### 9、★Vue组件间的参数传递方式
+### 9、★Vue组件通信
 
 ````js
 //父子组件间通信
-第一种方法是子组件通过 props 属性来接受父组件的数据，然后父组件在子组件上注册监听事件，子组件通过 emit 触发事件来向父组件发送数据。
+第一种方法是子组件通过 props 属性来接受父组件的数据，然后父组件在子组件上注册监听事件，子组件通过 $on绑定事件、$emit触发事件来向父组件发送数据（发布订阅）。
 第二种是通过 ref 属性给子组件设置一个名字。父组件通过 $refs 组件名来获得子组件，子组件通过 $parent 获得父组件，这样也可以实现通信。
+获取父子组件实例的方式, $children、 $parent
+用 ref 获取实例的方式调用组件的属性或者方法
 第三种是使用 provider/inject，在父组件中通过 provider 提供变量，在子组件中通过 inject 来将变量注入到组件中。不论子组件有多深，只要调用了 inject 那么就可以注入 provider 中的数据。
 
 //兄弟组件间通信
 第一种是使用 eventBus 的方法，它的本质是通过创建一个空的 Vue 实例来作为消息传递的对象，通信的组件引入这个实例，通信的组件通过在这个实例上监听和触发事件，来实现消息的传递。
+Vue.prototype.$bus = new Vue，然后通过$on,$emit来监听
 第二种是通过 $parent.$refs 来获取到兄弟组件，也可以进行通信。
 
 //任意组件之间
 使用 eventBus ，其实就是创建一个事件中心，相当于中转站，可以用它来传递事件和接收事件。
-
-
 如果业务逻辑复杂，很多组件之间需要同时处理一些公共的数据，这个时候采用上面这一些方法可能不利于项目的维护。这个时候可以使用 vuex ，vuex 的思想就是将这一些公共的数据抽离出来，将它作为一个全局的变量来管理，然后其他组件就可以对这个公共数据进行读写操作，这样达到了解耦的目的。
 ````
 
@@ -236,7 +239,7 @@ mixins 应该是我们最常使用的扩展组件的方式了。如果多个组�
 
 
 
-### 16、★谈谈对vuex的理解
+### 16、★Vuex
 
 ````js
 //vuex是什么
@@ -244,7 +247,7 @@ vuex是一个专为vue.js应用程序开发的状态管理模式，它采用集�
 //vuex的属性
 vuex有5个核心属性，state，getter，mutation，action，module
 state用来存储数据和状态；我们在根实例中注册了store后，可以用this.$store.state来访问，它对应vue里面的data，store存放数据的方式为响应式，vue组件可以从store中读取数据，如果数据发生变化，组件也会对应更新；
-getter可以认为是store的计算属性，它的返回值会根据它的依赖被缓存起来，只有当它的依赖值发生了改变才会重新计算
+getter可以认为是store的计算属性，它的返回值会根据它的依赖被缓存起来，只有当它的依赖值发生了改变才会重新计算；对store中的数据进行过滤或者业务上的处理，然后再返回。
 mutation：更改vuex的store中的状态的唯一方法是提交mutation
 action：包含任意异步操作，通过提交mutation间接改变状态；
 module：将store分割成模块，每个模块都具有state、mutation、action、getter甚至是嵌套子模块
@@ -263,6 +266,22 @@ Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。每一个 
       Mutation：是唯一更改 store 中状态的方法，且必须是同步函数
       Action：用于提交 mutation，而不是直接变更状态，可以包含任意异步操作
       Module：允许将单一的 Store 拆分为多个 store 且同时保存在单一的状态树中。
+      
+在vue组件中是通过
+this.$store.dispatch('saveUserName',res.username)
+来派发action的，action再通过
+saveUserName(context,username){
+    context.commit('saveUserName', username);
+}
+来提交mutation，最后mutation再通过
+saveUserName(state, username) {
+    state.username = username;
+  },
+来修改store中的数据
+
+由于是先渲染组件，再拿到请求返回的数据，所以需要将store加到computed属性中
+
+
 ````
 
 
@@ -469,7 +488,17 @@ vm.$watch('msg',()=>{})   //监听值，值变化则调用后面的函数
 ### 30、★webpack打包命令是什么？webpack如何实现多入口打包？有没有遇到过打包后本地可以访问静态资源，但是上线后却访问不到的问题？
 
 ````js
+//webpack打包方式
+1、命令行输入：webpack {entry file} {destination for bundled file}   入口文件路径和打包文件的存放路径
+2、配合配置文件进行打包：在根目录下新建一个名为webpack.config.js的文件，配置好之后在终端里运行webpack即可
+
+//webpack实现多入口打包
+多入口，创建多个html-webpack-plugin实例
+
+
 上线以后路径发生变化，需要配置webpack，vue-cli较少出现，因为已经默认配置好
+webpack.base.config.js和webpack.pro.config.js的publicPath路径不同
+在打包时需要使用相对路径来处理静态资源，更改build中资源发布路径配置（config/index.js, build对象）：
 ````
 
 
@@ -477,6 +506,127 @@ vm.$watch('msg',()=>{})   //监听值，值变化则调用后面的函数
 ### 31、★如果用户没有登录，需要跳转到登录界面，这个怎么实现？axios拦截器能否获取到当前用户正处于哪个页面？如果有多个请求，如何避免重复跳转或者重复弹出未登录的提示？
 
 ````js
-路由守卫
+//router.beforeEach
+用路由守卫判断用户用户登录状态,未登录则跳转到登录页面，已登录则正常进行页面跳转
+
+1、路由拦截
+首先在定义路由的时候就需要多添加一个自定义字段requireAuth，用于判断该路由的访问是否需要登录。如果用户已经登录，则顺利进入路由， 否则就进入登录页面。
+2、拦截器
+要想统一处理所有http请求和响应，就得用上 axios 的拦截器。通过配置http response inteceptor，当后端接口返回401 Unauthorized（未授权），让用户重新登录。
 ````
+
+
+
+### 32、组件中的data为什么是一个函数？
+
+````js
+同一个组件被复用多次，会创建多个实例。这些实例用的是同一个构造函数，如果data是一个对象的话，那么所有组件都共享了同一个对象。为了保证组件的数据独立性要求每个组件必须通过data函数返回一个对象作为组件的状态。
+````
+
+
+
+### 33、Vue中事件绑定的原理，包含原生事件绑定和组件事件绑定
+
+````js
+原生dom事件的绑定，采用的是addEventListener实现
+组件绑定事件采用的是$on方法
+````
+
+
+
+### 34、v-model中的实现原理及如何自定义v-model
+
+````js
+<el-checkbox :value="" @input=""></el-checkbox>
+<el-checkbox v-model="check"></el-checkbox>
+
+v-model可以看成是value+input方法的语法糖，前提情况是没有重新定义prop和event属性
+原生的v-model会根据标签的不同生成不同的事件和属性，
+如input checkbox标签中的v-model编译后的value就是checked，事件就是change
+````
+
+
+
+### 35、解决页面刷新后vuex的store数据丢失的问题
+
+````js
+项目中使用的方法
+mounted() {
+    // 在页面刷新重新发请求获取username和count，重新保存state
+    // 解决了页面刷新后vuex的store数据丢失的问题
+    // 因为vuex的store数据是保存在运行内存的，当页面刷新后内存会被清除，所以数据会丢失
+    if(this.$cookie.get('userId')){
+      this.getUser();
+      this.getCartCount();
+    }
+  },
+  methods: {
+    getUser(){
+      this.axios.get('/user').then((res={})=>{
+      this.$store.dispatch('saveUserName',res.username);
+      })
+    },
+    getCartCount(){
+      this.axios.get('/carts/products/sum').then((res=0)=>{
+      this.$store.dispatch('saveCartCount',res);
+      })
+    }
+  }
+
+其他方法：监听页面的unload事件，将store中的数据保存到localstorage中，当页面刷新完毕后，从localstorage中取出数据赋值给store
+````
+
+
+
+### 36、v-html会导致哪些问题？
+
+````js
+1、可能会导致XSS攻击，类似于innerHTML
+2、v-html会替换掉标签内部的子元素
+````
+
+
+
+### 37、父子组件生命周期调用顺序
+
+````js
+组件的调用顺序都是先父后子，渲染完成的顺序是先子后父
+组件的销毁操作是先父后子，销毁完成的顺序是先子后父
+//加载渲染过程
+父beforeCreate -> 父created -> 父beforeMount -> 子beforeCreate -> 子created -> 子beforeMount -> 子mounted -> 父mountd
+//子组件更新过程
+父beforeUpdate -> 子beforeUpdate -> 子updated -> 父updated
+//父组件更新过程
+父beforeUpdate -> 父updated
+//销毁过程
+父beforeDestroy -> 子beforeDestroy -> 子Destroyed -> 父Destroyed
+````
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -8,17 +8,18 @@
 <body>
     <div id="app"></div>
     <script>
-        let state = {count: 0};
-
-        const watcher = (fn) => {
-            fn();
+        var a = {
+            b: function() {
+                console.log('function');
+            }
         }
-        watcher(()=>{
-            app.innerHTML = state.count;
-        })
-        watcher(()=>{
-            console.log(state.count);
-        })
+        var b = {name:'cwj', age:{ year: 25}};
+        var c = JSON.parse(JSON.stringify(a));
+        var d = JSON.parse(JSON.stringify(b));
+        console.log(a);
+        console.log(b);
+        console.log(c);
+        console.log(d);
     </script>
 </body>
 </html>
