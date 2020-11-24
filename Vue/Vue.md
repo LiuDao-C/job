@@ -172,7 +172,7 @@ Vue.prototype.$bus = new Vue，然后通过$on,$emit来监听
 
 
 
-### 10、computed和watch、method的差异
+### 10、Computed和watch、method的差异
 
 ````js
 （1）computed 是计算一个新的属性，并将该属性挂载到 Vue 实例上，而 watch 是监听已经存在且已挂载到 Vue 实例上的数据，所以用 watch 同样可以监听 computed 计算属性的变化。

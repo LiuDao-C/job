@@ -18,7 +18,9 @@
 
      不足：不需要宽高，但有兼容性问题
 
-2. display:flex
+   - 子绝父相，top值和left值都为calc(50% - 50px)
+
+2. flex布局
 
    ```javascript
    body {
@@ -30,22 +32,7 @@
 
    不足：适合移动性开发，但有兼容性问题
 
-3. JavaScript
-
-   ```javascript
-   let HTML = document.documentElement,
-   	winW = HTML.clientWidth,
-   	winH = HTML.clientHeight,
-   	boxW = box.offsetWidth,
-   	boxH = box.offsetHeight;
-   box.style.position = "absolute";
-   box.style.left = (winW - boxW) / 2 + 'px';
-   box.style.top = (winH - boxH) / 2 + 'px'; 
-   ```
-
-   
-
-4. display:table-cell
+4. table  display:table-cell
 
    ```javascript
    /* 把盒子变成行内式，用文本水平垂直居中的方式 */
@@ -65,6 +52,21 @@
    ```
 
    不足：父级元素必须有固定宽高
+   
+4. grid布局
+
+   ````js
+   	.container {
+           display: grid;
+           justify-items: center;
+           align-items: center;
+       }
+       .box-center {
+           text-align: center;
+       }
+   ````
+
+   
 
 
 
@@ -294,12 +296,13 @@
 ### 4、::before和:after中双冒号和单冒号有什么区别？解释一下这两个符号的作用
 
 ````js
-//单冒号(:)用于CSS3伪类，双冒号(::)用于CSS3伪元素。（伪元素由双冒号和伪元素名称组成）
-//双冒号是在当前规范中引入的，用于区分伪类和伪元素。不过浏览器需要同时支持旧的已经存在的伪元素写法，而新的在CSS3中引入的伪元素则不允许再支持旧的单冒号的写法。
 //想让插入的内容出现在其他内容前，使用::before,否则，使用::after
 
 在css3中使用单冒号来表示伪类，用双冒号来表示伪元素。但是为了兼容已有的伪元素的写法，在一些浏览器中也可以使用单冒号来表示伪元素。
 伪类一般匹配的是元素的一些特殊状态，如hover、link等，而伪元素一般匹配的是特殊位置，比如after、before等。
+伪类表示已存在的某个元素处于某种状态，但是通过dom树又无法表示这种状态，就可以通过伪类来为其添加样式。例如a元素的:hover, :active等。
+伪元素主要是用来创建一些不存在原有dom结构树种的元素，例如：用::before和::after在一些存在的元素前后添加文字样式等，这些被添加的内容会以具体的UI显示出来，被用户所看到的，这些内容不会改变文档的内容，不会出现在DOM中，不可复制，仅仅是在CSS渲染层加入。
+伪元素与伪类的根本区别在于：操作的对象元素是否存在于原来的dom结构里。
 ````
 
 
@@ -308,7 +311,7 @@
 
 ````js
 每一个属性在定义中都给出了这个属性是否具有继承性，一个具有继承性的属性会在没有指定值的时候，会使用父元素的同属性的值来作为自己的值。
-一般具有继承性的属性有，字体相关的属性，font-size和font-weight等。文本相关的属性，color和text-align等。表格的一些布局属性、列表属性如list-style等。还有光标属性cursor、元素可见性visibility。
+一般具有继承性的属性有，字体相关的属性，font-size和font-weight等。文本相关的属性，color和text-align等。表格的列表布局属性如list-style等。还有光标属性cursor、元素可见性visibility。
 当一个属性不是继承属性的时候，我们也可以通过将它的值设置为inherit来使它从父元素那获取同名的属性值来继承。
 ````
 
@@ -344,17 +347,17 @@
 ### 8、CSS3有哪些新特性？（根据项目回答）
 
 ````js
-新增各种CSS选择器      :not(.input): 所有class不是.input的节点
-圆角   border-radius:8px
-多列布局   multi-column layout
-阴影和反射    shadow\reflect
-文字特效     text-shadow
-文字渲染     text-decoration
-线性渐变     gradient
-旋转        transform
-缩放，定位，倾斜，动画，多背景
-例如：transform:\scale(0.85,0.90)\translate(0px,-30px)\skew(-9deg,0deg)
-\Animation:
+//过渡
+transition: CSS属性，花费时间，效果曲线（默认ease），延迟时间（默认0）
+//动画
+animation: 动画名称，一个周期花费时间，运动曲线（默认ease），动画延迟（默认0），播放次数（默认1），是否反向播放动画（默认normal），是否暂停动画（默认running）
+//形状转换
+transform:rotate（30deg）/ translate(30px, 30px) / scale(.8)
+//选择器
+p:last-child     a[src$='.pdf']以pdf结尾
+//边框图片
+border-image: 图片url 图像边界向内偏移 图像边界的宽度(默认为边框的宽度) 用于指定在边框外部绘制偏移的量（默认0） 铺满方式--重复（repeat）、拉伸（stretch）或铺满（round）（默认：拉伸（stretch））;
+//弹性布局flex
 ````
 
 
@@ -364,9 +367,14 @@
 ````js
 flex布局是CSS3新增的一种布局方式，我们可以通过将一个元素的display属性值设置为flex从而使它称为一个flex容器，它的所有子元素都会成为它的项目。
 
-一个容器默认有两条轴，一个是水平的主轴，一个是与主轴垂直的交叉轴。我们可以使用flex-direction来指定主轴的方向，使用justify-content来指定元素在主轴上的排列方式，使用align-items来指定元素在交叉轴上的排列方式，还可以使用flex-wrap来规定当一行排列不下时的换行方式。
+一个容器默认有两条轴，一个是水平的主轴，一个是与主轴垂直的交叉轴。我们可以
+使用flex-direction来指定主轴的方向，//row | row-reverse | column | column-reverse
+使用justify-content来指定元素在主轴上的排列方式，//flex-start左对齐 | flex-end | center | space-between两端对齐 | space-around每个项目两侧的间隔相等;
+使用align-items来指定元素在交叉轴上的排列方式，还可以//flex-start | flex-end | center | baseline文字基线对齐 | stretch项目未设置高度或设为auto，将占满容器高度;
+使用flex-wrap来规定当一行排列不下时的换行方式。//nowrap | wrap | wrap-reverse
+flex-flow属性是flex-direction属性和flex-wrap属性的简写形式
 
-对于容器中的项目，我们可以使用order属性来指定项目的排列顺序，还可以使用flex-grow来指定当排列空间有剩余的时候，项目的放大比例，还可以使用flex-shrink来指定当排列空间不足时，项目的缩小比例。
+对于容器中的项目，我们可以使用order属性来指定项目的排列顺序（数值越小越靠前，默认0），还可以使用flex-grow来指定当排列空间有剩余的时候，项目的放大比例，还可以使用flex-shrink来指定当排列空间不足时，项目的缩小比例。
 ````
 
 
@@ -391,16 +399,33 @@ flex布局是CSS3新增的一种布局方式，我们可以通过将一个元素
 ### 11、为什么需要清除浮动，清除浮动的方式
 
 ````js
-浮动元素可以左右移动，直到遇到另一个浮动元素或者遇到它外边缘的包含框。浮动框不属于文档流中的普通流，当元素浮动之后，不会影响块级元素的布局，只会影响内联元素布局。此时文档流中的普通流就会表现得该浮动框不存在一样的布局模式。当包含框的高度小于浮动框的时候，此时就会出现“高度塌陷”。
-
-清除浮动是为了清除使用浮动元素产生的影响。浮动的元素，高度会塌陷，而高度的塌陷使我们页面后面的布局不能正常显示。
-
-清除浮动的方式
+在非IE浏览器（如Firefox）下，当容器的高度为auto，且容器的内容中有浮动（float为left或right）的元素，在这种情况下，容器的高度不能自动伸长以适应内容的高度，使得内容溢出到容器外面而影响（甚至破坏）布局的现象。
+清除浮动主要是为了解决，父元素因为子级元素浮动引起的内部高度为0的问题
+//清除浮动的方式
 （1）使用clear属性清除浮动。
+在最后一个浮动标签后，新加一个标签，给其设置clear：both；这会增加额外无意义标签
+//优点：简单，代码少，浏览器兼容性好。
+//缺点：需要添加大量无语义的html元素，代码不够优雅，后期不容易维护。
+（2）使用CSS的：after伪元素
+通过CSS伪元素在容器的内部元素最后添加了一个看不见的空格"020"或点"."，并且赋予clear属性来清除浮动。需要注意的是为了IE6和IE7浏览器，要给clearfix这个class添加一条zoom:1;触发haslayout。
+.clearfix:after{
+  content: "020"; 
+  display: block; 
+  height: 0; 
+  clear: both; 
+  visibility: hidden;  
+  }
 
-（2）使用BFC块级格式化上下文来清除浮动。
-
-因为BFC元素不会影响外部元素的特点，所以BFC元素也可以用来清除浮动的影响，因为如果不清除，子元素浮动则父元素高度塌陷，必然会影响后面元素布局和定位，这显然有违BFC元素的子元素不会影响外部元素的设定。
+.clearfix {
+  /* 触发 hasLayout */ 
+  zoom: 1; 
+  }
+（3）使用BFC块级格式化上下文来清除浮动。
+给浮动元素的容器添加overflow:hidden;或overflow:auto;可以清除浮动，另外在 IE6 中还需要触发 hasLayout ，例如为父元素设置容器宽高或设置 zoom:1。在添加overflow属性后，浮动元素又回到了容器层，把容器高度撑起，达到了清理浮动的效果。
+（4）给浮动的元素的容器添加浮动
+//这样会使其整体浮动，影响布局
+//内容增多的时候容易造成不会自动换行导致内容被隐藏掉，无法显示要溢出的元素
+因为BFC元素不会影响外部元素的特点，所以BFC元素也可以用来清除浮动的影响。
 ````
 
 
